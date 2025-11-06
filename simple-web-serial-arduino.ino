@@ -16,10 +16,10 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
   
   // Define events to listen to and their callback
-  WebSerial.on("event-to-arduino", eventCallback); 
+  WebSerial.on("event-with-number", eventCallback); 
   
   // Send named events to browser with a number, string, array or json object
-  WebSerial.send("event-from-arduino", 123);
+  //WebSerial.send("event-from-arduino", 123);
 
   // Set up stepper motor
   for(int i=22;i<30;i+=2)
@@ -46,11 +46,13 @@ int stepsPerAngle(float degrees) {
 
 void eventCallback(JSONVar data) {
     // Do something, even sending events right back!
-    Serial.println(data);
-    WebSerial.send("event-from-arduino", data);
+    //Serial.println(data);
+    //WebSerial.send("event-from-arduino", data);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(10);
     digitalWrite(LED_BUILTIN, LOW);
+
+    myservo.write(data);
 };
 
 void callbackWithStringParameter(JSONVar some_string) {
@@ -75,7 +77,7 @@ void loop() {
   }
   exit(0);*/
 
-  for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+  /*for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
@@ -83,5 +85,5 @@ void loop() {
   for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);                       // waits 15ms for the servo to reach the position
-  }
+  }*/
 }
