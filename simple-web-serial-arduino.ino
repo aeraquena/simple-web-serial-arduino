@@ -12,10 +12,10 @@ int pos = 0;    // variable to store the servo position
 int angle = 0;
 
 void setup() {
+
   // Initialize serial communication
   Serial.begin(57600);
-  WebSerial.log("Arduino has set up serial!");
-  
+  //WebSerial.log("Arduino has set up serial!");
 
   randomSeed(analogRead(0));
   
@@ -25,12 +25,12 @@ void setup() {
   myservo.write(random(360));
   delay(500); 
   
-  WebSerial.log("Arduino has moved the servo and delayed 500ms!");
+  // WebSerial.log("Arduino has moved the servo and delayed 500ms!");
   
-  // Define events to listen to and their callback
-  WebSerial.on("event-with-number", eventCallback); 
+  // // Define events to listen to and their callback
+  // WebSerial.on("event-with-number", eventCallback); 
 
-  WebSerial.log("Arduino has completed setup routine!");
+  // WebSerial.log("Arduino has completed setup routine!");
   
   // Send named events to browser with a number, string, array or json object
   //WebSerial.send("event-from-arduino", 123);
@@ -40,8 +40,6 @@ void setup() {
   {
     pinMode(i,OUTPUT);
   }*/
-
-  
 }
 
 int stepsPerAngle(float degrees) {
@@ -64,22 +62,30 @@ void eventCallback(JSONVar data) {
     delay(5);
     digitalWrite(LED_BUILTIN, LOW);*/
 
-   WebSerial.log("Arduino received data:");
-    WebSerial.log(data);
-    angle = data;
+  WebSerial.log("Arduino received data: " + data);
+  angle = data;
 };
 
-void callbackWithStringParameter(JSONVar some_string) {
-  Serial.println(some_string);
-}
-
 void loop() {
+
+
   // Check for new serial data every loop
   WebSerial.check();
 
+  WebSerial.log("Arduino is writing:" + angle);
+
+  Serial.println("Hello world!");
+
+  digitalWrite(LED_BUILTIN, HIGH);
+
+
   myservo.write(angle);
   //myservo.write(random(0, 360));
-  delay(15); 
+  delay(1000); 
+
+  digitalWrite(LED_BUILTIN, LOW);
+  
+  delay(100);
 
   //delay(5);
 
