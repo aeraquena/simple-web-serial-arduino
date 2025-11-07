@@ -9,28 +9,40 @@ Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
 int pos = 0;    // variable to store the servo position
+int angle = 0;
 
 void setup() {
   // Initialize serial communication
   Serial.begin(57600);
-  digitalWrite(LED_BUILTIN, LOW);
+  WebSerial.log("Arduino has set up serial!");
+  
+
+  randomSeed(analogRead(0));
+  
+  // Set up servo
+  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+
+  myservo.write(random(360));
+  delay(500); 
+  
+  WebSerial.log("Arduino has moved the servo and delayed 500ms!");
   
   // Define events to listen to and their callback
   WebSerial.on("event-with-number", eventCallback); 
+
+  WebSerial.log("Arduino has completed setup routine!");
   
   // Send named events to browser with a number, string, array or json object
   //WebSerial.send("event-from-arduino", 123);
 
   // Set up stepper motor
-  for(int i=22;i<30;i+=2)
+  /*for(int i=22;i<30;i+=2)
   {
     pinMode(i,OUTPUT);
-  }
+  }*/
 
-  // Set up servo
-  myservo.attach(9);  // attaches the servo on pin 9 to the servo object
+  
 }
-
 
 int stepsPerAngle(float degrees) {
   // a measure of how many times the motor shaft must turn for the output shaft to complete one revolution
@@ -48,11 +60,13 @@ void eventCallback(JSONVar data) {
     // Do something, even sending events right back!
     //Serial.println(data);
     //WebSerial.send("event-from-arduino", data);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(10);
-    digitalWrite(LED_BUILTIN, LOW);
+    /*digitalWrite(LED_BUILTIN, HIGH);
+    delay(5);
+    digitalWrite(LED_BUILTIN, LOW);*/
 
-    myservo.write(data);
+   WebSerial.log("Arduino received data:");
+    WebSerial.log(data);
+    angle = data;
 };
 
 void callbackWithStringParameter(JSONVar some_string) {
@@ -62,6 +76,11 @@ void callbackWithStringParameter(JSONVar some_string) {
 void loop() {
   // Check for new serial data every loop
   WebSerial.check();
+
+  myservo.write(angle);
+  //myservo.write(random(0, 360));
+  delay(15); 
+
   //delay(5);
 
   /*int a;
@@ -77,13 +96,14 @@ void loop() {
   }
   exit(0);*/
 
-  /*for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+  /*for (pos = 0; pos <= 180; pos += 5) { // goes from 0 degrees to 180 degrees
     // in steps of 1 degree
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
+    delay(5);                       // waits 15ms for the servo to reach the position
   }
-  for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+  for (pos = 180; pos >= 0; pos -= 5) { // goes from 180 degrees to 0 degrees
     myservo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(15);                       // waits 15ms for the servo to reach the position
+    delay(5);                       // waits 15ms for the servo to reach the position
   }*/
+
 }
